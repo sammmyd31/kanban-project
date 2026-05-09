@@ -195,6 +195,7 @@ function App() {
               tint={column.tint}
               cards={column.cards}
               labels={labels}
+              isComplete={column.status === 'done'}
               onAddCard={(card) => addCard(column.title, card)}
               onOpenDetail={(card) => setDetail({ card, columnTitle: column.title })}
               onMoveCard={moveCard}

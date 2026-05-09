@@ -10,6 +10,7 @@ interface KanbanColumnProps {
   tint?: string
   cards: Card[]
   labels: Label[]
+  isComplete?: boolean
   onAddCard: (card: Omit<Card, 'id'>) => void
   onOpenDetail: (card: Card) => void
   onMoveCard: (cardId: string, sourceTitle: string, targetTitle: string, targetIndex: number) => void
@@ -23,6 +24,7 @@ export default function KanbanColumn({
   tint = 'bg-white',
   cards,
   labels,
+  isComplete = false,
   onAddCard,
   onOpenDetail,
   onMoveCard,
@@ -79,6 +81,7 @@ export default function KanbanColumn({
             <KanbanCard
               card={card}
               allLabels={labels}
+              isComplete={isComplete}
               index={i}
               draggable
               onDragStart={(event) => {
