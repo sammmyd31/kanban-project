@@ -90,6 +90,7 @@ function entryLabel(entry: ActivityEntry): string {
       if (!m?.from) return `Due date set to ${formatLogDate(m?.to)}`
       if (!m?.to)   return 'Due date removed'
       return `Due date changed ${formatLogDate(m?.from)} → ${formatLogDate(m?.to)}`
+    case 'labels_updated':       return 'Labels updated'
     case 'status_changed':      return `Moved ${m?.from} → ${m?.to}`
     default:                    return type
   }

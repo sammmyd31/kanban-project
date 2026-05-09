@@ -74,6 +74,11 @@ function diffActivity(oldCard: Card, newCard: Card): Omit<ActivityInsert, 'task_
   if (oldDate !== newDate)
     entries.push({ action_type: 'due_date_changed', metadata: { from: oldDate, to: newDate } })
 
+  const oldLabels = [...(oldCard.label_ids ?? [])].sort().join(',')
+  const newLabels = [...(newCard.label_ids ?? [])].sort().join(',')
+  if (oldLabels !== newLabels)
+    entries.push({ action_type: 'labels_updated', metadata: null })
+
   return entries
 }
 
