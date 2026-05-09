@@ -257,8 +257,8 @@ export default function TaskDetailModal({ card, columnTitle, activityVersion, on
           </button>
         </div>
 
-        <div className="flex min-h-[32rem] border-t border-slate-100 dark:border-slate-800">
-          <div className="flex flex-1 flex-col px-6 py-4 border-r border-slate-100 dark:border-slate-800">
+        <div className="flex h-[32rem] border-t border-slate-100 dark:border-slate-800">
+          <div className="flex flex-1 flex-col overflow-y-auto px-6 py-4 border-r border-slate-100 dark:border-slate-800">
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <div className="flex rounded-lg border border-slate-200 p-0.5 gap-0.5 dark:border-slate-700">
                 {PRIORITY_CYCLE.map(p => {
@@ -394,7 +394,7 @@ export default function TaskDetailModal({ card, columnTitle, activityVersion, on
                 ) : activity.length === 0 ? (
                   <p className="text-sm text-slate-400">No activity yet.</p>
                 ) : (
-                  <div className="overflow-y-auto space-y-3 pr-1">
+                  <div className="flex-1 overflow-y-auto space-y-3 pr-1">
                     {activity.map(entry => (
                       <div key={entry.id} className="flex items-center gap-2.5">
                         <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 dark:bg-slate-600" />
