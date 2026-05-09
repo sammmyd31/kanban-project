@@ -10,7 +10,7 @@ import { LABEL_PALETTE } from '../lib/labels'
 interface TaskDetailModalProps {
   card: Card | null
   columnTitle: string
-  lastMoveAt: number
+  activityVersion: number
   onClose: () => void
   onSave: (card: Card) => Promise<void> | void
   onDelete: (cardId: string) => void
@@ -95,7 +95,7 @@ function entryLabel(entry: ActivityEntry): string {
   }
 }
 
-export default function TaskDetailModal({ card, columnTitle, lastMoveAt, onClose, onSave, onDelete, labels, onCreateLabel, onDeleteLabel }: TaskDetailModalProps) {
+export default function TaskDetailModal({ card, columnTitle, activityVersion, onClose, onSave, onDelete, labels, onCreateLabel, onDeleteLabel }: TaskDetailModalProps) {
   const [form, setForm] = useState({ title: '', description: '', priority: 'Medium' as Priority, due_date: '', label_ids: [] as string[] })
   const [labelPickerOpen, setLabelPickerOpen] = useState(false)
   const [titleError, setTitleError] = useState(false)
@@ -141,7 +141,7 @@ export default function TaskDetailModal({ card, columnTitle, lastMoveAt, onClose
       })
 
     return () => { cancelled = true }
-  }, [card?.id, lastMoveAt])
+  }, [card?.id, activityVersion])
 
   useEffect(() => {
     if (!card?.id) { setComments([]); return }

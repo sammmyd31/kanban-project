@@ -63,7 +63,7 @@ function SkeletonBoard() {
 }
 
 function App() {
-  const { columns, loading, error, lastMoveAt, addCard, editCard, deleteCard, moveCard } = useTasks()
+  const { columns, loading, error, activityVersion, addCard, editCard, deleteCard, moveCard } = useTasks()
   const { labels, createLabel, deleteLabel } = useLabels()
   const { isDark, toggle: toggleDark } = useDarkMode()
   const [detail, setDetail] = useState<DetailState | null>(null)
@@ -208,7 +208,7 @@ function App() {
       <TaskDetailModal
         card={detail?.card ?? null}
         columnTitle={detail?.columnTitle ?? ''}
-        lastMoveAt={lastMoveAt}
+        activityVersion={activityVersion}
         onClose={() => setDetail(null)}
         onSave={(card) => editCard(detail!.columnTitle, card)}
         onDelete={(cardId) => deleteCard(detail!.columnTitle, cardId)}

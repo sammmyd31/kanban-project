@@ -83,7 +83,7 @@ export function useTasks() {
   )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [lastMoveAt, setLastMoveAt] = useState(0)
+  const [activityVersion, setLastMoveAt] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -159,17 +159,18 @@ export function useTasks() {
       )
 
       if (card.label_ids?.length) {
-        supabase.from('task_labels').insert(
+        await supabase.from('task_labels').insert(
           card.label_ids.map(label_id => ({ task_id: realCard.id!, label_id }))
         )
       }
 
-      supabase.from('activity_log').insert({
+      await supabase.from('activity_log').insert({
         task_id: realCard.id,
         user_id: session!.user.id,
         action_type: 'created',
         metadata: null,
       })
+      setLastMoveAt(Date.now())
     } catch (e: unknown) {
       setColumns(prev =>
         prev.map(c =>
@@ -324,5 +325,5 @@ export function useTasks() {
     }
   }
 
-  return { columns, loading, error, lastMoveAt, addCard, editCard, deleteCard, moveCard }
+  return { columns, loading, error, activityVersion, addCard, editCard, deleteCard, moveCard }
 }
