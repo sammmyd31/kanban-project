@@ -83,6 +83,7 @@ export function useTasks() {
   )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [lastMoveAt, setLastMoveAt] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -272,10 +273,10 @@ export function useTasks() {
     targetTitle: string,
     targetIndex: number
   ) {
-    setColumns(prev => {
-      let movedCard: Card | undefined
-      let originalIndex = -1
+    let movedCard: Card | undefined
+    let originalIndex = -1
 
+    setColumns(prev => {
       const removed = prev.map(col => {
         if (col.title !== sourceTitle) return col
         const remaining = col.cards.filter((c, i) => {
@@ -287,27 +288,6 @@ export function useTasks() {
 
       if (!movedCard) return prev
 
-      const targetStatus = TITLE_TO_STATUS[targetTitle]
-
-      supabase
-        .from('tasks')
-        .update({ status: targetStatus, position: targetIndex })
-        .eq('id', cardId)
-        .then(({ error: moveError }) => {
-          if (moveError) console.error('Failed to persist move:', moveError)
-        })
-
-      if (sourceTitle !== targetTitle) {
-        ensureGuestSession().then(session => {
-          supabase.from('activity_log').insert({
-            task_id: cardId,
-            user_id: session!.user.id,
-            action_type: 'status_changed',
-            metadata: { from: sourceTitle, to: targetTitle },
-          })
-        })
-      }
-
       return removed.map(col => {
         if (col.title !== targetTitle) return col
         let insertIndex = targetIndex
@@ -317,7 +297,32 @@ export function useTasks() {
         return { ...col, cards }
       })
     })
+
+    const targetStatus = TITLE_TO_STATUS[targetTitle]
+
+    supabase
+      .from('tasks')
+      .update({ status: targetStatus, position: targetIndex })
+      .eq('id', cardId)
+      .then(({ error: moveError }) => {
+        if (moveError) console.error('Failed to persist move:', moveError)
+      })
+
+    if (sourceTitle !== targetTitle) {
+      ensureGuestSession()
+        .then(session => supabase.from('activity_log').insert({
+          task_id: cardId,
+          user_id: session!.user.id,
+          action_type: 'status_changed',
+          metadata: { from: sourceTitle, to: targetTitle },
+        }))
+        .then(({ error: logError }) => {
+          if (logError) console.error('Failed to log move:', logError)
+          else setLastMoveAt(Date.now())
+        })
+        .catch(err => console.error('Failed to log move:', err))
+    }
   }
 
-  return { columns, loading, error, addCard, editCard, deleteCard, moveCard }
+  return { columns, loading, error, lastMoveAt, addCard, editCard, deleteCard, moveCard }
 }
